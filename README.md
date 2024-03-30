@@ -1,2 +1,2 @@
 # Ezyrec
-A student and faculty portal
+An easy solution for students and faculty
