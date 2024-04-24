@@ -25,12 +25,12 @@ function Home() {
             <div className="u-repeater u-repeater-1">
               <div className="u-align-left u-container-style u-list-item u-repeater-item">
                 <div className="u-container-layout u-similar-container u-valign-middle u-container-layout-1">
-                  <a href="" className="u-border-none u-btn u-btn-round u-button-style u-hover-palette-3-light-2 u-palette-3-base u-radius-50 u-btn-1">faculty login </a>
+                  <a href="/loginfaculty" className="u-border-none u-btn u-btn-round u-button-style u-hover-palette-3-light-2 u-palette-3-base u-radius-50 u-btn-1">Faculty Login </a>
                 </div>
               </div>
               <div className="u-align-left u-container-style u-list-item u-repeater-item">
                 <div className="u-container-layout u-similar-container u-valign-middle u-container-layout-2">
-                  <a href="/loginstudent" className="u-border-none u-btn u-btn-round u-button-style u-hover-palette-3-light-2 u-palette-3-base u-radius-50 u-btn-2">student login </a>
+                  <a href="/loginstudent" className="u-border-none u-btn u-btn-round u-button-style u-hover-palette-3-light-2 u-palette-3-base u-radius-50 u-btn-2">Student Login </a>
                 </div>
               </div>
             </div>
