@@ -1,4 +1,5 @@
 import LoginForm from "./pages/LoginForm/LoginForm";
+import LoginForm2 from "./pages/LoginForm/LoginForm2";
 import Home from './pages/Home/Home';
 // import Logout from './pages/LogoutConfirm';
 
@@ -19,6 +20,8 @@ function App() {
           <Route path="/Academic" element={<Academic />} />
           <Route path="/loginstudent" element={<Logout />} />
            */}
+          <Route path="/loginfaculty" element={<LoginForm2 />} />
+          
         </Routes>
       </Router>
     </div>

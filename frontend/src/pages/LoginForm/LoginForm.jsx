@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../../assets/1503647889cover.webp'
+import logo from '../../assets/banner.png'
 import '../../styles/LoginForm.css';
 import { FaUser, FaLock } from "react-icons/fa";
 
