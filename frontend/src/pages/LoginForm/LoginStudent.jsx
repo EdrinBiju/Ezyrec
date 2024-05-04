@@ -1,9 +1,9 @@
 import React from 'react';
-import logo from '../../assets/banner.png'
-import '../../styles/LoginForm.css';
+import logo from '../../assets/banner.png';
+import '../../styles/Login.css';
 import { FaUser, FaLock } from "react-icons/fa";
 
-const LoginForm = () => {
+const LoginStudent = () => {
   return (
     <div className='login-content'>
         <img src={logo} alt='logo' />
@@ -39,4 +39,4 @@ const LoginForm = () => {
   )
 }
 
-export default LoginForm;
+export default LoginStudent;

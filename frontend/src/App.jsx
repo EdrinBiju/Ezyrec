@@ -1,5 +1,5 @@
-import LoginForm from "./pages/LoginForm/LoginForm";
-import LoginForm2 from "./pages/LoginForm/LoginForm2";
+import LoginStudent from "./pages/LoginForm/LoginStudent";
+import LoginFaculty from "./pages/LoginForm/LoginFaculty";
 import Home from './pages/Home/Home';
 // import Logout from './pages/LogoutConfirm';
 
@@ -15,12 +15,12 @@ function App() {
       <Router>
         <Routes>
           <Route index element={<Home />} />
-          <Route path="/loginstudent" element={<LoginForm />} />
+          <Route path="/loginstudent" element={<LoginStudent />} />
           {/* <Route path="/HomePage" element={<HomePage />} />
           <Route path="/Academic" element={<Academic />} />
           <Route path="/loginstudent" element={<Logout />} />
            */}
-          <Route path="/loginfaculty" element={<LoginForm2 />} />
+          <Route path="/loginfaculty" element={<LoginFaculty />} />
           
         </Routes>
       </Router>
