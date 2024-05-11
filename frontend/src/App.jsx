@@ -1,12 +1,9 @@
-import LoginStudent from "./pages/LoginForm/LoginStudent";
-import LoginFaculty from "./pages/LoginForm/LoginFaculty";
-import Home from './pages/Home/Home';
-// import Logout from './pages/LogoutConfirm';
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import HomePage from "./pages/HomePage";
-// import Academic from "./pages/Academic";
+import Home from './pages/Home/Home';
+import LoginStudent from "./pages/LoginForm/LoginStudent";
+import LoginFaculty from "./pages/LoginForm/LoginFaculty";
+import StudentHome from "./pages/Student/Student";
 
 function App() {
   return (
@@ -16,11 +13,8 @@ function App() {
         <Routes>
           <Route index element={<Home />} />
           <Route path="/loginstudent" element={<LoginStudent />} />
-          {/* <Route path="/HomePage" element={<HomePage />} />
-          <Route path="/Academic" element={<Academic />} />
-          <Route path="/loginstudent" element={<Logout />} />
-           */}
           <Route path="/loginfaculty" element={<LoginFaculty />} />
+          <Route path="/studenthome" element={<StudentHome />} />
           
         </Routes>
       </Router>
