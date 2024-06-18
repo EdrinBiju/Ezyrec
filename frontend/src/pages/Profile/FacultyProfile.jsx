@@ -5,9 +5,9 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import VerifyEmail from '../../Components/VerifyEmail';
 import ChangePassword from '../../Components/ChangePassword';
 
-const StudentProfile = () => {
-  const [student, setStudent] = useState(null);
-  const regNo = sessionStorage.getItem('regno');
+const FacultyProfile = () => {
+  const [faculty, setFaculty] = useState(null);
+  const facultyId = sessionStorage.getItem('facultyid');
   const fileInputRef = useRef(null);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [email, setEmail] = useState("");
@@ -21,44 +21,44 @@ const StudentProfile = () => {
 
 
   useEffect(() => {
-    const fetchStudentProfile = async () => {
+    const fetchFacultyProfile = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:5000/student/${regNo}`);
-        setStudent(response.data);
+        const response = await axios.get(`http://127.0.0.1:5000/faculty/${facultyId}`);
+        setFaculty(response.data);
         setEmail(response.data.email || "");
       } catch (error) {
-        console.error('Error fetching student profile:', error);
+        console.error('Error fetching faculty profile:', error);
       }
     };
 
-    fetchStudentProfile();
-  }, [regNo]);
+    fetchFacultyProfile();
+  }, [facultyId]);
 
-  if (!student) {
+  if (!faculty) {
     return <p>Loading...</p>;
   }
 
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
-  };
+//   const formatDate = (dateString) => {
+//     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+//     return new Date(dateString).toLocaleDateString('en-US', options);
+//   };
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
       const formData = new FormData();
-      formData.append('reg_no', regNo);
+      formData.append('faculty_id', facultyId);
       formData.append('profilePic', file);
 
       try {
-        const response = await axios.post('http://127.0.0.1:5000/addstudentprofile', formData, {
+        const response = await axios.post('http://127.0.0.1:5000/addfacultyprofile', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
         alert(response.data.message);
-        const updatedProfile = await axios.get(`http://127.0.0.1:5000/student/${regNo}`);
-        setStudent(updatedProfile.data);
+        const updatedProfile = await axios.get(`http://127.0.0.1:5000/faculty/${facultyId}`);
+        setFaculty(updatedProfile.data);
       } catch (error) {
         alert('File upload failed');
       }
@@ -74,7 +74,7 @@ const StudentProfile = () => {
   };
 
   const handleEmailEditClick = () => {
-    setEmail(student.email);
+    setEmail(faculty.email);
     setIsEditingPassword(false);
     setIsEditingEmail(true);
   };
@@ -86,15 +86,15 @@ const StudentProfile = () => {
   };
 
   const handleRequestOtp = async () => {
-    if(email === student.email){
+    if(email === faculty.email){
         setIsEditingEmail(false);
         setshowEmailModal(false);
         setOtp('')
         return null;
     }
     try {
-      const response = await axios.post('http://localhost:5000/request-otp', {
-        reg_no: regNo,
+      const response = await axios.post('http://localhost:5000/request-otp-faculty', {
+        faculty_id: facultyId,
         new_email: email,
       });
       if (response.status === 200) {
@@ -107,14 +107,14 @@ const StudentProfile = () => {
 
   const handleVerifyOtp = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/update-email', {
-        reg_no: regNo,
+      const response = await axios.post('http://localhost:5000/update-email-faculty', {
+        faculty_id: facultyId,
         new_email: email,
         otp: otp,
       });
       if (response.status === 200) {
         alert('Email updated successfully');
-        student.email = email; // Update local student email
+        faculty.email = email; // Update local faculty email
         setIsEditingEmail(false);
         setshowEmailModal(false);
         setOtp('')
@@ -158,8 +158,8 @@ const StudentProfile = () => {
 
   const handlePasswordSave = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:5000/verify-password', {
-        reg_no: regNo,
+      const response = await axios.post('http://127.0.0.1:5000/verify-password-faculty', {
+        faculty_id: facultyId,
         current_password: password,
       });
       if (response.status === 200) {
@@ -184,8 +184,8 @@ const StudentProfile = () => {
         return;
       }
 
-      const response = await axios.post('http://127.0.0.1:5000/change-password', {
-        reg_no: regNo,
+      const response = await axios.post('http://127.0.0.1:5000/change-password-faculty', {
+        faculty_id: facultyId,
         new_password: newPassword,
       });
       if (response.status === 200) {
@@ -203,8 +203,8 @@ const StudentProfile = () => {
     <div className="container">
       <div className="profile-container">
         <div className="profile-pic-box">
-          {student.profilePath ? (
-            <img src={`http://127.0.0.1:5000/profile/${student.profilePath}`} alt="Profile" className="profile-pic" />
+          {faculty.profilePath ? (
+            <img src={`http://127.0.0.1:5000/profile/${faculty.profilePath}`} alt="Profile" className="profile-pic" />
           ) : (
             <div className="upload-btn-box">
               <button className="upload-btn" onClick={handleUploadClick}>
@@ -222,7 +222,7 @@ const StudentProfile = () => {
           )}
         </div>
         <div className="update-btn-box">
-          {student.profilePath ? (
+          {faculty.profilePath ? (
             <div>
               <button className="update-btn" onClick={handleUploadClick}>
                 <i className="fas fa-sync-alt"></i> Update Profile
@@ -240,40 +240,22 @@ const StudentProfile = () => {
           )}
         </div>
         <div className="field-name">
-          <p><strong>Registration Number</strong></p>
+          <p><strong>Faculty Id</strong></p>
         </div>
         <div className="field-value">
-          <p>{student.reg_no}</p>
+          <p>{faculty.faculty_id}</p>
         </div>
         <div className="field-name">
           <p><strong>Name</strong></p>
         </div>
         <div className="field-value">
-          <p>{student.name}</p>
-        </div>
-        <div className="field-name">
-          <p><strong>Date Of Birth</strong></p>
-        </div>
-        <div className="field-value">
-          <p>{formatDate(student.dob)}</p>
-        </div>
-        <div className="field-name">
-          <p><strong>Gender</strong></p>
-        </div>
-        <div className="field-value">
-          <p>{student.gender}</p>
+          <p>{faculty.name}</p>
         </div>
         <div className="field-name">
           <p><strong>Department</strong></p>
         </div>
         <div className="field-value">
-          <p>{student.department}</p>
-        </div>
-        <div className="field-name">
-          <p><strong>Activity Points</strong></p>
-        </div>
-        <div className="field-value">
-          <p>{student.activity_points}</p>
+          <p>{faculty.department}</p>
         </div>
         <div className="field-name">
           <p><strong>Email</strong></p>
@@ -281,9 +263,9 @@ const StudentProfile = () => {
         <div className="field-value">
           <p>
             {!isEditingEmail && (
-              student.email ? (
+              faculty.email ? (
                 <>
-                  {student.email}
+                  {faculty.email}
                   <button className="edit-btn" onClick={handleEmailEditClick}>
                     <i className="fas fa-edit"></i>
                   </button>
@@ -364,4 +346,4 @@ const StudentProfile = () => {
   );
 };
 
-export default StudentProfile;
+export default FacultyProfile;

@@ -112,3 +112,8 @@
 .register-link p a:hover{
     text-decoration: underline;
 }
+
+p[type='loading'] {
+    color:white;
+    font-size: x-large;
+}

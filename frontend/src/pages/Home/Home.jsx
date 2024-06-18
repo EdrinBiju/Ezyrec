@@ -1,44 +1,103 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import '../../styles/Home.css';
-import '../../styles/nicepage.css';
+import CloseIcon from '@material-ui/icons/Close';
 
-function Home() {
-    return (
-      <div>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta charSet="utf-8" />
-      <meta name="description" content />
-      <title>Home</title>
-      <link rel="stylesheet" href="nicepage.css" media="screen" />
-      <link rel="stylesheet" href="Home.css" media="screen" />
-      <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" />
-      <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700,700i,900,900i" />
-      <meta name="theme-color" content="#9b74ea" />
-      <meta property="og:title" content="Home" />
-      <meta property="og:type" content="website" />
-      <meta data-intl-tel-input-cdn-path="intlTelInput/" />
-      <section className="u-align-center u-clearfix u-image u-shading u-section-1" src data-image-width={1280} data-image-height={1183} id="carousel_642d">
-        <div className="u-clearfix u-sheet u-sheet-1">
-          <h1 className="u-align-center u-custom-font u-font-merriweather u-text u-text-default-lg u-text-default-md u-text-default-xl u-title u-text-1"> EZYREC</h1>
-          <h5 className="u-custom-font u-font-merriweather u-text u-text-default u-text-2"> an easy solution for students and faculties</h5>
-          <div className="u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-list u-list-1">
-            <div className="u-repeater u-repeater-1">
-              <div className="u-align-left u-container-style u-list-item u-repeater-item">
-                <div className="u-container-layout u-similar-container u-valign-middle u-container-layout-1">
-                  <a href="/loginfaculty" className="u-border-none u-btn u-btn-round u-button-style u-hover-palette-3-light-2 u-palette-3-base u-radius-50 u-btn-1">Faculty Login </a>
-                </div>
-              </div>
-              <div className="u-align-left u-container-style u-list-item u-repeater-item">
-                <div className="u-container-layout u-similar-container u-valign-middle u-container-layout-2">
-                  <a href="/loginstudent" className="u-border-none u-btn u-btn-round u-button-style u-hover-palette-3-light-2 u-palette-3-base u-radius-50 u-btn-2">Student Login </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+function HomeStudent() {
+  const [notifications, setNotifications] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [pageNumber, setPageNumber] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-    );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/announcements', {
+          pageNumber: pageNumber,
+          searchText: searchTerm,
+          dataSize: 20
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (response.status === 200) {
+          setNotifications(response.data.notifications);
+        } else {
+          console.error('No content found in JSON data.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [searchTerm, pageNumber]); // Add searchTerm to the dependency array
+
+  const handleSearch = (event) => {
+    setPageNumber(0);
+    setSearchTerm(event.target.value);
   };
-export default Home;
+
+  const handleNextPage = () => {
+    setPageNumber(pageNumber + 1); // Increment page number
+  };
+
+  const handlePreviousPage = () => {
+    if (pageNumber > 0) {
+      setPageNumber(pageNumber - 1);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
+  return (
+    <div className="container">
+      <h2 className='heading'>Announcements</h2>
+      <div className="search-container"> {/* Added container for search bar */}
+        <input
+          type="text"
+          placeholder="Search notifications"
+          value={searchTerm}
+          onChange={handleSearch}
+          className="search-bar"
+        />
+        {searchTerm && ( // Render the close icon only if searchTerm is not empty
+          <div className="close-icon" onClick={() => [setSearchTerm(''),setPageNumber(0)]}>
+            <CloseIcon />
+          </div>
+        )}
+      </div>
+      <div className="notifications">
+      {loading && <p className="loading-text">Loading...</p>}
+        {!loading && notifications.length === 0 ? (
+          <p className="no-notifications-message">No Notifications found</p>
+        ) : (
+        notifications.map((notification, index) => (
+          <div className="notification-card" key={index}>
+            <h2>{notification.title}</h2>
+            <p className="date">{formatDate(notification.date)}</p>
+            <div
+            className="description"
+            dangerouslySetInnerHTML={{ __html: notification.description }}
+          />
+          </div>
+        )))}
+      </div>
+      <div className="page-buttons">
+      <button className="prev-button" onClick={handlePreviousPage} disabled={pageNumber === 0}>Prev</button>
+      {/* <button className="next-button" onClick={handleNextPage}>Next</button> */}
+      <button className="next-button" onClick={handleNextPage} disabled={notifications.length < 20}>Next</button>
+      </div>
+    </div>
+  );
+}
+
+
+export default HomeStudent;
