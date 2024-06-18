@@ -1,0 +1,143 @@
+.profile-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-pic-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  height: 190px; /* Set a standard height */
+}
+
+.profile-pic {
+  width: 150px;
+  height: 170px;
+  border-style: solid;
+  border-color:darkgrey;
+  border-radius: 20%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.upload-btn-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px; /* Standard button text size */
+}
+
+.update-btn-box {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Ensure it matches the profile-pic-box height */
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.update-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px; /* Standard button text size */
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.field-name p,
+.field-value p {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0px;
+  padding: 15px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.field-name {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  color: #333;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.field-value {
+  display: flex;
+  align-items: center;
+  color: #555;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.edit-btn {
+  background-color: #ffc107;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+input[type="email"],
+.change {
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 85%;
+  box-sizing: border-box;
+}
+
+.action-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0 5px;
+  color: #007bff; /* Icon color */
+}
+
+.action-btn.confirm {
+  color: #28a745; /* Confirm button color */
+}
+
+.action-btn.cancel {
+  padding-left: 5px;
+  color: #dc3545; /* Cancel button color */
+}

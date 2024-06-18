@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/banner.png';
 import '../../styles/Login.css';
 import { FaUser, FaLock } from "react-icons/fa";
 
 const LoginStudent = () => {
+  const navigate = useNavigate(); // Initialize useHistory
   
-  const [username, setUsername] = useState('');
+  const [regno, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
@@ -21,21 +23,20 @@ const LoginStudent = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/login', {
+      const response = await fetch('http://127.0.0.1:5000/studentlogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ regno, password }),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        // Handle successful login, e.g., redirect to student dashboard
-        console.log(data.message); // Print success message
+        sessionStorage.setItem('regno', regno);
+        navigate('/studenthome');
       } else {
-        const data = await response.json();
-        setError(data.message);
+        // Display error message for wrong credentials
+        setError('Invalid student ID or password.');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -44,72 +45,46 @@ const LoginStudent = () => {
   };
 
   return (
-    // <div className='login-content'>
-    //     <img src={logo} alt='logo' />
-    //     <div className='wrapper'>
-        
-    //       <form action="">
-          
-    //         <h1>Students Login</h1>
-    //         <div className="input-box">
-    //           <input type="text" placeholder='Username' required />
-    //           <FaUser className='icon' />
-    //         </div>
-    //         <div className="input-box">
-    //           <input type="password" placeholder='Password' required />
-    //           <FaLock className='icon' />
-    //         </div>
-
-    //         <div className="remember-forget">
-    //           <label><input type="checkbox" />Remember Me</label>
-    //           <a href="reset password">Forget Password?</a>
-    //         </div>
-
-    //         <button type="submit" href="/studenthome">Login</button>
-            
-    //       </form>
-
-    //     </div>
-    // </div>
     <div className='login-content'>
-    <img src={logo} alt='logo' />
-    <div className='wrapper'>
-      <form onSubmit={handleSubmit}>
-        <h1>Students Login</h1>
-        <div className="input-box">
-          <input 
-            type="text" 
-            placeholder='Username' 
-            value={username} 
-            onChange={handleUsernameChange} 
-            required 
-          />
-          <FaUser className='icon' />
-        </div>
-        <div className="input-box">
-          <input 
-            type="password" 
-            placeholder='Password' 
-            value={password} 
-            onChange={handlePasswordChange} 
-            required 
-          />
-          <FaLock className='icon' />
-        </div>
+      <img src={logo} alt='logo' />
+      <div className='wrapper'>
+        <form onSubmit={handleSubmit}>
+          <h1>Students Login</h1>
+          <div className="input-box">
+            <input 
+              type="text" 
+              placeholder='Register Number'
+              autoComplete="username" 
+              value={regno} 
+              onChange={handleUsernameChange} 
+              required 
+            />
+            <FaUser className='icon' />
+          </div>
+          <div className="input-box">
+            <input 
+              type="password" 
+              autoComplete="current-password"
+              placeholder='Password' 
+              value={password} 
+              onChange={handlePasswordChange} 
+              required 
+            />
+            <FaLock className='icon' />
+          </div>
 
-        <div className="remember-forget">
-          <label><input type="checkbox" />Remember Me</label>
-          <a href="reset password">Forget Password?</a>
-        </div>
+          {/* <div className="remember-forget">
+            <label><input type="checkbox" />Remember Me</label>
+            <a href="reset password">Forget Password?</a>
+          </div> */}
 
-        {error && <p className="error">{error}</p>}
+          {error && <p className="error">{error}</p>}
 
-        <button type="submit">Login</button>
-      </form>
+          <button type="submit">Login</button>
+        </form>
+      </div>
     </div>
-  </div>
-    
-  )
+  );
 }
 
 export default LoginStudent;
