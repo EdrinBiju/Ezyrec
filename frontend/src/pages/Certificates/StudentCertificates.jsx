@@ -212,7 +212,9 @@ const StudentCertificates = () => {
       { criteria: "Cultural Activities", subCriteria: ["Music", "Performing arts", "Literary arts"] },
       { criteria: "Professional Self Initiatives", subCriteria: [
         "Paper presentation/publication at IITs/NITs",
-        "Poster Presentation at IITs/NITs"
+        "Paper presentation/publication at KTU or its affiliated institutes",
+        "Poster Presentation at IITs/NITs",
+        "Poster Presentation at KTU or its affiliated institutes"
       ] }
     ]
     return additionalRequiredCriteria.some(

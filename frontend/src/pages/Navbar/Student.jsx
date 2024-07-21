@@ -75,6 +75,7 @@ import ConfirmLogout from '../../Components/ConfirmLogout';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Student = () => {
+  console.log("arived")
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
@@ -104,6 +105,9 @@ const Student = () => {
         <div className='studentsite'>
           <ul className="nav nav-pills nav-justified justify-content-center fs-3" id="pills-tab" role="tablist">
             <li className="nav-item" role="presentation">
+              <button className={`nav-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => handleTabClick('profile')}>Profile</button>
+            </li>
+            <li className="nav-item" role="presentation">
               <button className={`nav-link ${activeTab === 'home' ? 'active' : ''}`} onClick={() => handleTabClick('home')}>Home</button>
             </li>
             <li className="nav-item" role="presentation">
@@ -112,9 +116,7 @@ const Student = () => {
             <li className="nav-item" role="presentation">
               <button className={`nav-link ${activeTab === 'certificates' ? 'active' : ''}`} onClick={() => handleTabClick('certificates')}>Certificates</button>
             </li>
-            <li className="nav-item" role="presentation">
-              <button className={`nav-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => handleTabClick('profile')}>Profile</button>
-            </li>
+            
             <li className='logout-container'>
               <button className="logout-button" onClick={handleLogout}><i className="fas fa-external-link-alt"></i> Logout</button>
             </li>
