@@ -36,12 +36,13 @@ points={
         "National Events":30,
         "International Events":40,
     },
-    (
-        "Attending Full time Conference / Seminars / Exhibitions / Workshop / STTP conducted at IITs/NITs",
-        "Poster Presentation at IITs/NITs",
-        "Industrial Training/Internship (at least for 5 full days)"
-    ):20,
-    ("Paper presentation/publication at IITs/NITs"):30,
+    ("Attending Full time Conference / Seminars / Exhibitions / Workshop / STTP conducted at IITs/NITs"):15,
+    ("Attending Full time Conference / Seminars /Exhibitions / Workshop / STTP conducted at KTU or its affiliated institutes"):6,
+    ("Paper presentation/publication at IITs/NITs"):20,
+    ("Paper presentation/publication at KTU or its affiliated institutes"):8,
+    ("Poster Presentation at IITs/NITs"):10,
+    ("Poster Presentation at KTU or its affiliated institutes"):4,
+    ("Industrial Training/Internship (at least for 5 full days)"):20,
     ("Industrial/Exhibition visits"):5,
   },
   "Entrepreneurship and Innovation": {
@@ -66,7 +67,7 @@ points={
         "College Association Chapters (Mechanical, Civil, Electrical etc.)",
         "Festival & Technical Events (College approved)",
         "Hobby Clubs",
-        "Special Initiatives (Approval from College and University is mandatory)"
+        # "Special Initiatives (Approval from College and University is mandatory)"
     ):{
         "Core coordinator":15,
         "Sub coordinator":10,
@@ -117,7 +118,11 @@ achievment={
         "International Events":12,
     },
   },
-  ("Professional Self Initiatives"): {"Certificate of recognition":10}
+  ("Professional Self Initiatives"): {
+      "Certificate of recognition":10,
+      ("Paper presentation/publication at IITs/NITs","Poster Presentation at IITs/NITs"):10,
+      ("Paper presentation/publication at KTU or its affiliated institutes","Poster Presentation at KTU or its affiliated institutes"):2,
+    }
 }
 
 def CalculateActivityPoint(certificate):

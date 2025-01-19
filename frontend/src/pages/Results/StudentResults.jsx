@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CloseIcon from '@material-ui/icons/Close';
 import '../../styles/StudentResult.css';
 
@@ -13,9 +13,13 @@ const StudentResults = () => {
     const regNo = sessionStorage.getItem('regno');
     const [viewResult, setViewResult] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
+    const [isFetching, setIsFetching] = useState(false);
 
     useEffect(() => {
         const fetchResults = async () => {
+            if (isFetching) return; 
+            console.log('Fetching results for reg_no:', regNo);// Prevent duplicate fetches
+            setIsFetching(true);
             try {
                 const response = await axios.post('http://127.0.0.1:5000/published-results-student', {
                     reg_no: regNo
@@ -23,9 +27,13 @@ const StudentResults = () => {
                 const sortedResults = response.data.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
                 setResults(sortedResults);
                 setLoading(false);
+                setIsFetching(false); 
+                console.log('Results fetched successfully:', sortedResults);
             } catch (err) {
                 setError(err);
                 setLoading(false);
+                setIsFetching(false);
+                console.log('Error fetching results:', err);
             }
         };
 
@@ -85,7 +93,7 @@ const StudentResults = () => {
                                         className={`view-button ${viewResult === result.result_name ? 'close-button' : ''}`}
                                         onClick={() => viewresult(result.result_name)}
                                     >
-                                        <FontAwesomeIcon icon={viewResult === result.result_name ? faTimes : faEye} /> {viewResult === result.result_name ? 'Hide' : 'View'}
+                                        <FontAwesomeIcon icon={viewResult === result.result_name ? faEyeSlash : faEye} /> {viewResult === result.result_name ? 'Hide' : 'View'}
                                     </button>
                                 </div>
                             </div>

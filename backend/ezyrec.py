@@ -9,6 +9,8 @@ from email.mime.multipart import MIMEMultipart
 from activitypoint import CalculateActivityPoint
 from apscheduler.schedulers.background import BackgroundScheduler
 from bson import ObjectId
+from dateutil.relativedelta import relativedelta
+import pymongo
 
 app = Flask(__name__)
 app.config['DEBUG'] = True  # Ensure the app is running in debug mode
@@ -16,9 +18,15 @@ app.config['DEBUG'] = True  # Ensure the app is running in debug mode
 # logging.basicConfig(level=logging.DEBUG)
 
 # Configure MongoDB
-app.config["MONGO_URI"] = "mongodb://localhost:27017/ezyrec"  # Update with your database name
+# app.config["MONGO_URI"] = "mongodb://localhost:27017/ezyrec"  # Update with your database name
 app.config['UPLOAD_FOLDER'] = 'uploads'
-mongo = PyMongo(app)
+# mongo = PyMongo(app)
+mongo = pymongo.MongoClient("mongodb+srv://testofunknown:Abc123@ezyrec-database.utsamq6.mongodb.net/?retryWrites=true&w=majority&appName=ezyrec-database")
+
+if mongo:
+    print("connected")
+else: 
+    print("not connected")
 jwt = JWTManager(app)
 CORS(app)
 
@@ -47,7 +55,7 @@ def student_login():
     reg_no = data['regno']
     password = data['password']
 
-    user = mongo.db.student.find_one({'reg_no': reg_no})
+    user = mongo.ezyrec.student.find_one({'reg_no': reg_no})
 
     if not user or user['password'] != password:
         return jsonify({'error': 'Invalid reg_no or password'}), 401
@@ -71,7 +79,7 @@ def faculty_login():
     faculty_id = data['facultyid']
     password = data['password']
 
-    user = mongo.db.faculty.find_one({'faculty_id': faculty_id})
+    user = mongo.ezyrec.faculty.find_one({'faculty_id': faculty_id})
 
     if not user or user['password'] != password:
         return jsonify({'error': 'Invalid faculty_id or password'}), 401
@@ -199,7 +207,7 @@ def add_certificate():
         }
     )
 
-    student = mongo.db.student.find_one({'reg_no': reg_no})
+    student = mongo.ezyrec.student.find_one({'reg_no': reg_no})
 
     certificate = {
         "reg_no": reg_no,
@@ -222,13 +230,13 @@ def add_certificate():
         "status": "Pending"
     }
 
-    result = mongo.db.certificates.insert_one(certificate)
+    result = mongo.ezyrec.certificates.insert_one(certificate)
     return jsonify({"message": "Certificate added", "id": str(result.inserted_id)}), 201
 
 @app.route('/view/uploads/<filename>')
 def uploaded_file(filename):
     # Find the document with the unique filename
-    document = mongo.db.certificates.find_one({"uniqueFilename": filename})
+    document = mongo.ezyrec.certificates.find_one({"uniqueFilename": filename})
     if document:
         original_filename = document['originalFilename']
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=False, download_name=original_filename)
@@ -238,7 +246,7 @@ def uploaded_file(filename):
 @app.route('/viewAchievement/uploads/<filename>')
 def uploadedd_file(filename):
     # Find the document with the unique filename
-    document = mongo.db.certificates.find_one({"achievementUniqueFilename": filename})
+    document = mongo.ezyrec.certificates.find_one({"achievementUniqueFilename": filename})
     if document:
         original_filename = document['achievementOriginalFilename']
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=False, download_name=original_filename)
@@ -248,7 +256,7 @@ def uploadedd_file(filename):
 @app.route('/download/uploads/<filename>')
 def uploadeddd_file(filename):
     # Find the document with the unique filename
-    document = mongo.db.certificates.find_one({"uniqueFilename": filename})
+    document = mongo.ezyrec.certificates.find_one({"uniqueFilename": filename})
     if document:
         original_filename = document['originalFilename']
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True, download_name=original_filename)
@@ -258,7 +266,7 @@ def uploadeddd_file(filename):
 @app.route('/downloadAchievement/uploads/<filename>')
 def uploadedddd_file(filename):
     # Find the document with the unique filename
-    document = mongo.db.certificates.find_one({"achievementUniqueFilename": filename})
+    document = mongo.ezyrec.certificates.find_one({"achievementUniqueFilename": filename})
     if document:
         original_filename = document['achievementOriginalFilename']
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True, download_name=original_filename)
@@ -272,7 +280,7 @@ def get_student_certificates():
     if not reg_no:
         return jsonify({"error": "Registration number is required"}), 400
 
-    certificates = mongo.db.certificates.find({"reg_no": reg_no})
+    certificates = mongo.ezyrec.certificates.find({"reg_no": reg_no})
 
     serialized_certificates = []
     for certificate in certificates:
@@ -301,7 +309,9 @@ def get_student_certificates():
 
 @app.route('/student/<reg_no>', methods=['GET'])
 def get_student_profile(reg_no):
-    student = mongo.db.student.find_one_or_404({'reg_no': reg_no})
+    student = mongo.ezyrec.student.find_one({'reg_no': reg_no})
+    if not student:
+        return jsonify({"error": "Student not found"}), 404
     studentdata = {
         "reg_no":student["reg_no"],
         "name":student["name"],
@@ -316,7 +326,9 @@ def get_student_profile(reg_no):
 
 @app.route('/faculty/<faculty_id>', methods=['GET'])
 def get_faculty_profile(faculty_id):
-    faculty = mongo.db.faculty.find_one_or_404({'faculty_id': faculty_id})
+    faculty = mongo.ezyrec.faculty.find_one({'faculty_id': faculty_id})
+    if not faculty:
+        return jsonify({"error": "Faculty not found"}), 404
     Facultydata = {
         "faculty_id":faculty["faculty_id"],
         "name":faculty["name"],
@@ -335,7 +347,7 @@ def add_student_profile():
         return jsonify({"error": "No file uploaded"}), 400
 
     # Fetch the student's current profile to check if a profile picture already exists
-    student = mongo.db.student.find_one({'reg_no': reg_no})
+    student = mongo.ezyrec.student.find_one({'reg_no': reg_no})
     if not student:
         return jsonify({"error": "Student not found"}), 404
 
@@ -350,7 +362,7 @@ def add_student_profile():
     profile_pic.save(file_path)
 
     # Update the MongoDB record with the new profile picture path
-    result = mongo.db.student.update_one(
+    result = mongo.ezyrec.student.update_one(
         {'reg_no': reg_no},
         {'$set': {'profilePath': file_path}}
     )
@@ -369,7 +381,7 @@ def add_faculty_profile():
         return jsonify({"error": "No file uploaded"}), 400
 
     # Fetch the student's current profile to check if a profile picture already exists
-    faculty = mongo.db.faculty.find_one({'faculty_id': faculty_id})
+    faculty = mongo.ezyrec.faculty.find_one({'faculty_id': faculty_id})
     if not faculty:
         return jsonify({"error": "Faculty not found"}), 404
 
@@ -384,7 +396,7 @@ def add_faculty_profile():
     profile_pic.save(file_path)
 
     # Update the MongoDB record with the new profile picture path
-    result = mongo.db.faculty.update_one(
+    result = mongo.ezyrec.faculty.update_one(
         {'faculty_id': faculty_id},
         {'$set': {'profilePath': file_path}}
     )
@@ -439,7 +451,7 @@ def request_otp():
     if not reg_no or not new_email:
         return jsonify({"error": "Student ID and new email are required"}), 400
 
-    student = mongo.db.student.find_one({"reg_no": reg_no})
+    student = mongo.ezyrec.student.find_one({"reg_no": reg_no})
     if not student:
         return jsonify({"error": "Student not found"}), 404
 
@@ -452,7 +464,7 @@ def request_otp():
         "otp": otp,
         "expires_at": (datetime.datetime.now(timezone.utc) + datetime.timedelta(seconds=OTP_EXPIRATION)).astimezone(timezone.utc)
     }
-    mongo.db.otp.insert_one(otp_record)
+    mongo.ezyrec.otp.insert_one(otp_record)
 
     email_thread = threading.Thread(target=send_otp_email, args=(new_email, otp))
     email_thread.start()
@@ -472,7 +484,7 @@ def request_otp_faculty():
     if not faculty_id or not new_email:
         return jsonify({"error": "Student ID and new email are required"}), 400
 
-    faculty = mongo.db.faculty.find_one({"faculty_id": faculty_id})
+    faculty = mongo.ezyrec.faculty.find_one({"faculty_id": faculty_id})
     if not faculty:
         return jsonify({"error": "Student not found"}), 404
 
@@ -485,7 +497,7 @@ def request_otp_faculty():
         "otp": otp,
         "expires_at": (datetime.datetime.now(timezone.utc) + datetime.timedelta(seconds=OTP_EXPIRATION)).astimezone(timezone.utc)
     }
-    mongo.db.otp.insert_one(otp_record)
+    mongo.ezyrec.otp.insert_one(otp_record)
 
     email_thread = threading.Thread(target=send_otp_email, args=(new_email, otp))
     email_thread.start()
@@ -503,7 +515,7 @@ def update_email():
         return jsonify({"error": "Student ID, new email, and OTP are required"}), 400
 
     # Verify OTP
-    otp_record = mongo.db.otp.find_one({"reg_no": reg_no, "new_email": new_email, "otp": otp})
+    otp_record = mongo.ezyrec.otp.find_one({"reg_no": reg_no, "new_email": new_email, "otp": otp})
     if not otp_record:
         return jsonify({"error": "Invalid OTP"}), 400
 
@@ -519,10 +531,10 @@ def update_email():
         return jsonify({"error": "OTP has expired"}), 400
 
     # Update the student's email in the database
-    mongo.db.student.update_one({"reg_no": reg_no}, {"$set": {"email": new_email}})
+    mongo.ezyrec.student.update_one({"reg_no": reg_no}, {"$set": {"email": new_email}})
 
     # Delete the OTP record after successful verification
-    mongo.db.otp.delete_one({"_id": otp_record["_id"]})
+    mongo.ezyrec.otp.delete_one({"_id": otp_record["_id"]})
 
     return jsonify({"message": "Email updated successfully"}), 200
 
@@ -537,7 +549,7 @@ def update_email_faculty():
         return jsonify({"error": "Student ID, new email, and OTP are required"}), 400
 
     # Verify OTP
-    otp_record = mongo.db.otp.find_one({"faculty_id": faculty_id, "new_email": new_email, "otp": otp})
+    otp_record = mongo.ezyrec.otp.find_one({"faculty_id": faculty_id, "new_email": new_email, "otp": otp})
     if not otp_record:
         return jsonify({"error": "Invalid OTP"}), 400
 
@@ -553,10 +565,10 @@ def update_email_faculty():
         return jsonify({"error": "OTP has expired"}), 400
 
     # Update the student's email in the database
-    mongo.db.faculty.update_one({"faculty_id": faculty_id}, {"$set": {"email": new_email}})
+    mongo.ezyrec.faculty.update_one({"faculty_id": faculty_id}, {"$set": {"email": new_email}})
 
     # Delete the OTP record after successful verification
-    mongo.db.otp.delete_one({"_id": otp_record["_id"]})
+    mongo.ezyrec.otp.delete_one({"_id": otp_record["_id"]})
 
     return jsonify({"message": "Email updated successfully"}), 200
 
@@ -569,7 +581,7 @@ def verify_password():
     if not reg_no or not current_password:
         return jsonify({"error": "Username and current password are required"}), 400
 
-    user = mongo.db.student.find_one({"reg_no": reg_no})
+    user = mongo.ezyrec.student.find_one({"reg_no": reg_no})
 
     if not user or (user['password'] != current_password):
         return jsonify({"error": "Invalid username or password"}), 401
@@ -585,7 +597,7 @@ def verify_password_faculty():
     if not faculty_id or not current_password:
         return jsonify({"error": "Username and current password are required"}), 400
 
-    user = mongo.db.faculty.find_one({"faculty_id": faculty_id})
+    user = mongo.ezyrec.faculty.find_one({"faculty_id": faculty_id})
 
     if not user or (user['password'] != current_password):
         return jsonify({"error": "Invalid username or password"}), 401
@@ -605,7 +617,7 @@ def change_password():
     # if not user or (user['password'] != current_password):
     #     return jsonify({"error": "Invalid username or current password"}), 401
 
-    mongo.db.student.update_one({"reg_no": reg_no}, {"$set": {"password": new_password}})
+    mongo.ezyrec.student.update_one({"reg_no": reg_no}, {"$set": {"password": new_password}})
 
     return jsonify({"message": "Password changed successfully"}), 200
 
@@ -622,7 +634,7 @@ def change_password_faculty():
     # if not user or (user['password'] != current_password):
     #     return jsonify({"error": "Invalid username or current password"}), 401
 
-    mongo.db.faculty.update_one({"faculty_id": faculty_id}, {"$set": {"password": new_password}})
+    mongo.ezyrec.faculty.update_one({"faculty_id": faculty_id}, {"$set": {"password": new_password}})
 
     return jsonify({"message": "Password changed successfully"}), 200
 
@@ -644,7 +656,7 @@ def get_certificates():
     elif category == "Search By Register Number" and search_text:
         query['reg_no'] = {'$regex': search_text, '$options': 'i'}
     
-    certificates = mongo.db.certificates.find(query)
+    certificates = mongo.ezyrec.certificates.find(query)
     
     serialized_certificates = []
     for certificate in certificates:
@@ -683,7 +695,7 @@ def delete_certificate(certificate_id):
         object_id = ObjectId(certificate_id)
         
         # Find the certificate by ID
-        certificate = mongo.db.certificates.find_one({"_id": object_id})
+        certificate = mongo.ezyrec.certificates.find_one({"_id": object_id})
         if not certificate:
             return jsonify({"error": "Certificate not found"}), 404
 
@@ -695,13 +707,13 @@ def delete_certificate(certificate_id):
         # Subtract activity points if the status is "Accepted"
         if certificate['status'] == 'Accepted':
             reg_no = certificate['reg_no']
-            student = mongo.db.student.find_one({"reg_no": reg_no})
+            student = mongo.ezyrec.student.find_one({"reg_no": reg_no})
             if student:
                 new_points = student['activity_points'] - certificate['activity_point']
-                mongo.db.student.update_one({"reg_no": reg_no}, {"$set": {"activity_points": new_points}})
+                mongo.ezyrec.student.update_one({"reg_no": reg_no}, {"$set": {"activity_points": new_points}})
         
         # Delete the certificate from the MongoDB collection
-        mongo.db.certificates.delete_one({"_id": object_id})
+        mongo.ezyrec.certificates.delete_one({"_id": object_id})
 
         return jsonify({"message": "Certificate deleted successfully"}), 200
 
@@ -715,18 +727,18 @@ def reject_certificate(certificate_id):
             return jsonify({"error": "Invalid certificate ID"}), 400
 
         _id = ObjectId(certificate_id)
-        certificate = mongo.db.certificates.find_one({"_id": _id})
+        certificate = mongo.ezyrec.certificates.find_one({"_id": _id})
         if not certificate:
             return jsonify({"error": "Certificate not found"}), 404
         
         if certificate['status'] == 'Accepted':
             reg_no = certificate['reg_no']
-            student = mongo.db.student.find_one({"reg_no": reg_no})
+            student = mongo.ezyrec.student.find_one({"reg_no": reg_no})
             if student:
                 new_points = student['activity_points'] - certificate['activity_point']
-                mongo.db.student.update_one({"reg_no": reg_no}, {"$set": {"activity_points": new_points}})
+                mongo.ezyrec.student.update_one({"reg_no": reg_no}, {"$set": {"activity_points": new_points}})
 
-        mongo.db.certificates.update_one({"_id": _id}, {"$set": {"status": "Rejected"}})
+        mongo.ezyrec.certificates.update_one({"_id": _id}, {"$set": {"status": "Rejected"}})
         return jsonify({"message": "Certificate rejected successfully"}), 200
 
     except Exception as e:
@@ -739,7 +751,7 @@ def accept_certificate(certificate_id):
             return jsonify({"error": "Invalid certificate ID"}), 400
 
         _id = ObjectId(certificate_id)
-        certificate = mongo.db.certificates.find_one({"_id": _id})
+        certificate = mongo.ezyrec.certificates.find_one({"_id": _id})
         if not certificate:
             return jsonify({"error": "Certificate not found"}), 404
 
@@ -748,15 +760,15 @@ def accept_certificate(certificate_id):
         if not reg_no:
             return jsonify({"error": "Student registration number not found in certificate"}), 400
 
-        student = mongo.db.student.find_one({"reg_no": reg_no})
+        student = mongo.ezyrec.student.find_one({"reg_no": reg_no})
         if not student:
             return jsonify({"error": "Student not found"}), 404
 
         current_points = student.get('activity_points', 0)
         new_points = current_points + activity_points
 
-        mongo.db.student.update_one({"reg_no": reg_no}, {"$set": {"activity_points": new_points}})
-        mongo.db.certificates.update_one({"_id": _id}, {"$set": {"status": "Accepted"}})
+        mongo.ezyrec.student.update_one({"reg_no": reg_no}, {"$set": {"activity_points": new_points}})
+        mongo.ezyrec.certificates.update_one({"_id": _id}, {"$set": {"status": "Accepted"}})
 
         return jsonify({"message": "Certificate accepted and activity points added"}), 200
 
@@ -798,35 +810,46 @@ def fetch_published_results():
 
 @app.route('/fetch-student-result', methods=['GET'])
 def fetch_student_result():
+    print("Request received for /published-results-student")
     response = requests.post(OFFICIAL_API_RESULTS_URL, json=PUBLISHED_RESULTS_PAYLOAD, headers=HEADERS, verify=False)
     response.raise_for_status()  # Raise an exception for HTTP errors
 
     all_published_results = response.json()
-    all_published_results = response.json()
     btech_published_results = []
     for result in all_published_results:
-        if "b.tech" in result['resultName'].lower() or "btech" in result['resultName'] :
+        if "b.tech" in result['resultName'].lower() or "btech" in result['resultName'].lower() :
             btech_published_results.append(result)
-    print(btech_published_results)
+    # print(btech_published_results)
     for p_result in btech_published_results:
         token = p_result['token']
-        published_date = p_result['publishDate']
+        published_date = datetime.datetime.strptime(p_result['publishDate'], "%Y-%m-%d")
         resultName = p_result['resultName']
 
         if not token:
             continue
 
         try:
-            students = mongo.db.student.find()
+            students = mongo.ezyrec.student.find()
 
             for student in students:
+
+                join_date = student.get('join_date')
+                if join_date:
+                    join_date = datetime.datetime.strptime(str(join_date), "%Y-%m-%d %H:%M:%S")
+                else:
+                    continue  # Skip if no join_date
+
+                join_date_plus_4_months = join_date + relativedelta(months=+4)
+                if published_date <= join_date_plus_4_months:
+                    continue  # Skip if published date is not greater than join date + 4 months
+
                 register_no = student.get('reg_no')
                 date_st = student['dob']
                 date_st = datetime.datetime.strptime(str(date_st), "%Y-%m-%d %H:%M:%S")
                 date_of_birth = str(date_st.strftime("%Y-%m-%d"))
 
                 # Check if the result for this student and token already exists in MongoDB
-                existing_result = mongo.db.results.find_one({"reg_no": register_no, "result_name": resultName})
+                existing_result = mongo.ezyrec.results.find_one({"reg_no": register_no, "result_name": resultName})
                 if existing_result:
                     continue  # Skip if already exists
 
@@ -857,7 +880,7 @@ def fetch_student_result():
                     }
 
                     # Save the result to MongoDB
-                    mongo.db.results.insert_one(result_document)
+                    mongo.ezyrec.results.insert_one(result_document)
                 except requests.exceptions.RequestException as e:
                     print(f"Error fetching individual student result: {e}")
                     continue
@@ -865,10 +888,10 @@ def fetch_student_result():
         except requests.exceptions.RequestException as e:
             print(f"Error fetching published results: {e}")
     # Retrieve all valid results for all students with the specified token
-    all_student_results = mongo.db.results.find({"validity": "Valid"})
+    all_student_results = mongo.ezyrec.results.find({"validity": "Valid"})
     serialized_results = []
     for sr in all_student_results:
-        student = mongo.db.student.find_one({"reg_no":sr["reg_no"]})
+        student = mongo.ezyrec.student.find_one({"reg_no":sr["reg_no"]})
         serialized_result = {
             "name":student["name"],
             "reg_no": sr["reg_no"],
@@ -887,23 +910,38 @@ def fetch_student_result():
 def published_results_student():
     data = request.json
     register_no = data.get('reg_no')
-    student = mongo.db.student.find_one({"reg_no":register_no})
+    student = mongo.ezyrec.student.find_one({"reg_no":register_no})
     date_st = student['dob']
     date_st = datetime.datetime.strptime(str(date_st), "%Y-%m-%d %H:%M:%S")
     date_of_birth = str(date_st.strftime("%Y-%m-%d"))
 
+    join_date_str = student.get('join_date')
+    if join_date_str:
+        join_date = datetime.datetime.strptime(str(join_date_str), "%Y-%m-%d %H:%M:%S")
+    else:
+        return jsonify({"error": "Join date not found for the student"}), 404
+
+    join_date_plus_4_months = join_date + relativedelta(months=+4)
+
     try:
         response = requests.post(OFFICIAL_API_RESULTS_URL, json=PUBLISHED_RESULTS_PAYLOAD, headers=HEADERS, verify=False)
         response.raise_for_status()  # Raise an exception for HTTP errors
-
+        
         published_results = response.json()
-
+        # print(published_results[0])
         for result in published_results:
-            if "B.Tech" in result['resultName'] or "BTech" in result['resultName']:
+            if "b.tech" in result['resultName'].lower() or "btech" in result['resultName'].lower() :
+
+                published_date_str = result['publishDate']
+                published_date = datetime.datetime.strptime(published_date_str, "%Y-%m-%d")
+                
+                if published_date <= join_date_plus_4_months:
+                    continue  # Skip if published date is not greater than join date + 4 months
+
                 token = result['token']
 
                 # Check if the result for this student already exists in MongoDB
-                existing_result = mongo.db.results.find_one({"reg_no": register_no, "result_name": result['resultName']})
+                existing_result = mongo.ezyrec.results.find_one({"reg_no": register_no, "result_name": result['resultName']})
                 if existing_result:
                     continue  # Skip if already exists
 
@@ -934,11 +972,11 @@ def published_results_student():
                     }
 
                     # Save the result to MongoDB
-                    mongo.db.results.insert_one(result_document)
+                    mongo.ezyrec.results.insert_one(result_document)
                 except requests.exceptions.RequestException as e:
                     continue
         
-        student_results = mongo.db.results.find({"validity":"Valid","reg_no":register_no})
+        student_results = mongo.ezyrec.results.find({"validity":"Valid","reg_no":register_no})
 
         serialised_results=[]
         for sr in student_results:
@@ -960,23 +998,36 @@ def published_results_student():
 def published_results_allstudents():
     data = request.json
     token = data.get('token')
-    published_date = data.get('date')
+    published_date_str = data.get('date')
     resultName = data.get('resultName')
 
     if not token:
         return jsonify({"error": "Token is required"}), 400
 
+    published_date = datetime.datetime.strptime(published_date_str, "%Y-%m-%d")
+
     try:
-        students = mongo.db.student.find()
+        students = mongo.ezyrec.student.find()
 
         for student in students:
+
+            join_date_str = student.get('join_date')
+            if join_date_str:
+                join_date = datetime.datetime.strptime(str(join_date_str), "%Y-%m-%d %H:%M:%S")
+            else:
+                continue  # Skip if no join_date
+
+            join_date_plus_4_months = join_date + relativedelta(months=+4)
+            if published_date <= join_date_plus_4_months:
+                continue  # Skip if published date is not greater than join date + 4 months
+
             register_no = student.get('reg_no')
             date_st = student['dob']
             date_st = datetime.datetime.strptime(str(date_st), "%Y-%m-%d %H:%M:%S")
             date_of_birth = str(date_st.strftime("%Y-%m-%d"))
 
             # Check if the result for this student and token already exists in MongoDB
-            existing_result = mongo.db.results.find_one({"reg_no": register_no, "result_name": resultName})
+            existing_result = mongo.ezyrec.results.find_one({"reg_no": register_no, "result_name": resultName})
             if existing_result:
                 continue  # Skip if already exists
 
@@ -1007,17 +1058,17 @@ def published_results_allstudents():
                 }
 
                 # Save the result to MongoDB
-                mongo.db.results.insert_one(result_document)
+                mongo.ezyrec.results.insert_one(result_document)
             except requests.exceptions.RequestException as e:
                 print(f"Error fetching individual student result: {e}")
                 continue
 
         # Retrieve all valid results for all students with the specified token
-        all_student_results = mongo.db.results.find({"validity": "Valid", "result_name": resultName})
+        all_student_results = mongo.ezyrec.results.find({"validity": "Valid", "result_name": resultName})
 
         serialized_results = []
         for sr in all_student_results:
-            student = mongo.db.student.find_one({"reg_no":sr["reg_no"]})
+            student = mongo.ezyrec.student.find_one({"reg_no":sr["reg_no"]})
             serialized_result = {
                 "name":student["name"],
                 "reg_no": sr["reg_no"],
@@ -1039,7 +1090,7 @@ def published_results_allstudents():
 def delete_expired_otps():
     current_time = datetime.datetime.now(timezone.utc)
     try:
-        result = mongo.db.otp.delete_many({"expires_at": {"$lt": current_time}})
+        result = mongo.ezyrec.otp.delete_many({"expires_at": {"$lt": current_time}})
         # print(f"Deleted {result.deleted_count} expired OTPs")
     except Exception as e:
         print(f"Error deleting expired OTPs: {e}")

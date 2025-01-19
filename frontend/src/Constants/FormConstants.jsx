@@ -8,7 +8,9 @@ export const criteriaOptions = {
     "Competitions conducted by Professional Societies",
     "Attending Full time Conference / Seminars / Exhibitions / Workshop / STTP conducted at IITs/NITs",
     "Paper presentation/publication at IITs/NITs",
+    "Paper presentation/publication at KTU or its affiliated institutes",
     "Poster Presentation at IITs/NITs",
+    "Poster Presentation at KTU or its affiliated institutes",
     "Industrial Training/Internship (at least for 5 full days)",
     "Industrial/Exhibition visits",
     "Foreign Language Skill (TOFEL/IELTS/BEC exams etc.)",
@@ -31,7 +33,7 @@ export const criteriaOptions = {
     "College Association Chapters (Mechanical, Civil, Electrical etc.)",
     "Festival & Technical Events (College approved)",
     "Hobby Clubs",
-    "Special Initiatives (Approval from College and University is mandatory)",
+    // "Special Initiatives (Approval from College and University is mandatory)",
     "Elected student representatives",
   ],
 };
@@ -91,10 +93,12 @@ export const approvalDocuments = [
           "Competitions conducted by Professional Societies",
           "Attending Full time Conference/Seminars/Exhibitions/Workshop/STTP conducted at IITs/NITs",
           "Paper presentation/publication at IITs/NITs",
+          "Paper presentation/publication at KTU or its affiliated institutes",
           "Poster Presentation at IITs/NITs",
+          "Poster Presentation at KTU or its affiliated institutes",
           "Foreign Language Skill (TOFEL/IELTS/BEC exams etc.)",
         ],
-        approvalDocuments: ["Certificate", "Letter from Authorities"],
+        approvalDocuments: ["Certificate"],
       },
       {
         name: ["Industrial Training/Internship (at least for 5 full days)"],
@@ -140,7 +144,7 @@ export const approvalDocuments = [
           "College Association Chapters (Mechanical, Civil, Electrical etc.)",
           "Festival & Technical Events (College approved)",
           "Hobby Clubs",
-          "Special Initiatives (Approval from College and University is mandatory)",
+          // "Special Initiatives (Approval from College and University is mandatory)",
           "Elected student representatives",
         ],
         approvalDocuments: ["Documentary evidence"],
@@ -151,7 +155,7 @@ export const approvalDocuments = [
 
 export const additionalCriteria = {
   "National Initiatives": [
-    " C certificate / outstanding performance supported by certification", 
+    "C certificate / outstanding performance supported by certification", 
     "Best NSS Volunteer Awardee (University level), supported by certification",
     "Participation in National Integration Camp, supported by certification",
     "Pre Republic Day Parade Camp (South India), supported by certification",

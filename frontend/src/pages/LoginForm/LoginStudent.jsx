@@ -10,6 +10,8 @@ const LoginStudent = () => {
   const [regno, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  
+  const [isFetching, setIsFetching] = useState(false);
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -20,9 +22,13 @@ const LoginStudent = () => {
   };
 
   const handleSubmit = async (e) => {
+    if (isFetching) return; 
+    console.log("login")
+    setIsFetching(true);
     e.preventDefault();
 
     try {
+      console.log('request')
       const response = await fetch('http://127.0.0.1:5000/studentlogin', {
         method: 'POST',
         headers: {
@@ -30,16 +36,22 @@ const LoginStudent = () => {
         },
         body: JSON.stringify({ regno, password }),
       });
-
+      console.log("response")
       if (response.ok) {
         sessionStorage.setItem('regno', regno);
         navigate('/studenthome');
+        
+        setIsFetching(false); 
       } else {
         // Display error message for wrong credentials
         setError('Invalid student ID or password.');
+        
+        setIsFetching(false);
       }
     } catch (error) {
       console.error('Error:', error);
+      
+      setIsFetching(false);
       setError('An unexpected error occurred. Please try again later.');
     }
   };
