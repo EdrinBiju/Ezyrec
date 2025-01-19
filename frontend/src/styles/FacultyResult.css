@@ -1,0 +1,190 @@
+.search-container {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+}
+
+.close-icon {
+    cursor: pointer;
+    padding: 10px;
+}
+
+.result-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.result-header p {
+    margin: 0;
+}
+
+.result-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #8c004e;
+}
+
+.publish-date {
+    font-size: 14px;
+    color: #666;
+}
+
+.result-header button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.result-header button:hover {
+    background-color: #0056b3;
+}
+
+.result-header .close-button {
+    background-color: #dc3545;
+}
+
+.result-header .close-button:hover {
+    background-color: #c82333;
+}
+
+.student-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .student-card {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .student-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .student-name, .student-regno {
+    margin: 0 !important;
+    font-size: 16px;
+    flex: 1;
+  }
+  
+  .student-name p, .student-regno p{
+    margin: 0 !important;
+  }
+  .student-name {
+    text-align: left;
+  }
+  
+  .student-regno {
+    text-align: left;
+  }
+  
+  .student-card-header button {
+    margin-left: auto; /* Push the button to the far right */
+  }
+  
+
+.view-student-result-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.view-student-result-button:hover {
+    background-color: #0056b3;
+}
+
+.result-table {
+    margin-top: 10px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #f8f9fa;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #dee2e6;
+}
+
+th {
+    background-color: #e9ecef;
+}
+
+th.center-text, td.center-text {
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.noresult {
+    text-align: center;
+    margin-top: 10px;
+    color: #666;
+}
+
+.view-button {
+    padding: 5px 10px;
+    font-size: 14px;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .view-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .close-button {
+    background-color: #dc3545;
+  }
+  
+  .close-button:hover {
+    background-color: #c82333;
+  }

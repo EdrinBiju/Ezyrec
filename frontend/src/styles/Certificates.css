@@ -1,0 +1,278 @@
+.user-content-heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.certificate-heading {
+  font-size: 33px;
+  padding: 0px;
+  margin-top: 8px;
+}
+
+.btn {
+  --bs-btn-padding-x: none;
+  --bs-btn-padding-y: none;
+  --bs-btn-border-color:none;
+  margin: 0;
+}
+
+.add-new-certificate:disabled, .add-new-certificate:disabled:hover{
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.add-new-certificate {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-new-certificate:hover {
+  background-color: #45a049;
+}
+
+.formcontainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.user-content-item {
+  margin-top: 20px;
+}
+
+.certificate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 25px;
+}
+
+button[type="submit"],
+.back-button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover,
+.back-button:hover {
+  background-color: #45a049;
+}
+
+.back-button {
+  background-color: #d9534f;
+}
+
+.back-button:hover {
+  background-color: #c9302c;
+}
+
+.certificates-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+.certificate-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color:azure;
+  /* background-color: #f9f9f9; */
+  border: 4px solid #ddd;
+  box-shadow: 0 0 10px #ddd;
+  border-radius: 10px;
+  max-width: 468px;
+  width: calc(33.1% - 12px);
+  min-width: 440px;
+  text-align: center;
+  transition: transform 0.3s;
+  box-sizing: border-box; /* Ensures padding is included in the width calculation */
+}
+
+.certificate-item:hover {
+  transform: scale(1.05);
+}
+
+.certificate-thumbnail {
+  display: flex;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  object-position: top;
+  border-style: none none solid none;
+  border-color: #ddd;
+  border-radius: 10px 10px 0px 0px;
+  margin-bottom: 10px;
+}
+
+.certificate-info {
+  flex-grow: 1;
+  text-align: left;
+  padding: 0px 20px;
+}
+
+.certificate-info p {
+  margin: 5px 0;
+  font-size: 1rem;
+  /* color: white; */
+}
+
+.certificate-actions {
+  display:flex;
+  /* overflow:scroll ; */
+  justify-content: space-between;
+  padding: 10px 20px 20px 20px;
+}
+
+.achievementcertificate-actions {
+  display:flex;
+  /* overflow:scroll ; */
+  justify-content: space-between;
+  padding: 10px 0px;
+}
+
+.action-button {
+  width: 120px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.action-button:hover {
+  background-color: #0056b3;
+}
+
+.action-button[type='delete'] {
+  background-color: #dc3545;
+}
+
+.action-button[type='reject'] {
+  background-color: #dc3545;
+}
+
+.action-button[type='accept'] {
+  background-color: #28a745;
+}
+
+.action-button[type='accept']:hover {
+  background-color: #218838;
+}
+
+.action-button[type='delete']:hover {
+  background-color: #c82333;
+}
+
+.action-button[type='reject']:hover{
+  background-color: #c82333;
+}
+
+.certificate-text{
+  font-weight: bold;
+}
+
+.status {
+  font-weight: bold;
+}
+
+.status.pending {
+  color: orange;
+}
+
+.status.accepted {
+  color: green;
+}
+
+.status.rejected {
+  color: red;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+  align-items: center;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 5%;
+  padding-right: 5%;
+  margin-bottom: 20px;
+}
+
+.header{
+  margin: 0px 0px 0px;
+  align-items: center;
+}
+
+.filter-menus {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap:20px;
+  width: 50%;
+}
+
+.menu-item {
+  width: 50%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.view-div {
+  display: inline;
+}
+
+.no-found{
+  width: 100%;
+  font-size:x-large;
+  align-content: center;
+  height: 55vh;
+}
+
+p[type='no-found'] {
+  text-align: center;
+}

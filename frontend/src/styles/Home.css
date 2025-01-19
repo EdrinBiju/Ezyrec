@@ -1,0 +1,125 @@
+/* Add some basic styling */
+body {
+  font-family: Monograph, sans serif Roboto;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  min-width: 490px;
+}
+
+.container {
+  max-width: 100%;
+  min-height: 577px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  /* border-style: solid solid none solid;
+  border-top-color: black;
+  border-left-color: black;
+  border-right-color: black; */
+  border-style: solid;
+  border-color:royalblue;
+}
+
+.heading {
+  text-align: center;
+  color: #333;
+  padding-bottom: 7px;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.notifications {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.notification-card {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  font-weight: bold;
+}
+
+.notification-card h2 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.date {
+  font-size: 1em;
+  color: #8c004e;
+  margin-bottom: 10px;
+}
+
+.description {
+  margin: 0;
+  color: #666;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.page-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.prev-button,
+.next-button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4CAF50; /* Green */
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.prev-button:hover,
+.next-button:hover {
+  background-color: #45a049;
+}
+
+.prev-button:disabled,
+.next-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.no-notifications-message {
+  padding: 10px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.close-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #555; /* Set the color of the icon */
+}
